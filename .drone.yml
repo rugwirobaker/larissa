@@ -1,3 +1,4 @@
+---
 kind: pipeline
 name: default
 
@@ -12,3 +13,8 @@ steps:
   commands:
   - touch .env
   - make release
+---
+kind: signature
+hmac: 78da8c7b5291d185092e148393a6e9680d85c266a09a1671912608226d21d7d8
+
+...
