@@ -12,6 +12,7 @@ all: binary
 
 build:
 	@echo "> building binaries..."
+	CGO_ENABLED=0 go build -o bin/larissa-dev ./cmd/.
 clean:
 	@echo "> cleaning up..."
 dev:
