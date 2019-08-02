@@ -1,3 +1,5 @@
+[![Build Status](https://cloud.drone.io/api/badges/rugwirobaker/larissa/status.svg)](https://cloud.drone.io/rugwirobaker/larissa)
+
 # Larissa
 Larissa is an elegent image server accessible via a S3 like HTTP API.
 
