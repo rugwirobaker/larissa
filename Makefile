@@ -1,4 +1,4 @@
-include .env
+.DEFAULT_GOAL := help
 
 VERSION = "unset"
 DATE=$(shell date -u +%Y-%m-%d-%H:%M:%S-%Z)
@@ -10,31 +10,38 @@ PROJECTNAME=$(shell basename "$(PWD)"
 GOPROXY =$("https://proxy.golang.org")
 BUILD_FLAGS = "-X github.com/rugwirobaker/larissa/pkg/build.version=$(VERSION) -X github.com/rugwirobaker/larissa/pkg/build.buildDate=$(DATE)"
 
-all: binary
+all: help
 
-build:
-	@echo "> building binaries..."
-	CGO_ENABLED=0 go build -o bin/larissa ./cmd/.
-clean:
-	@echo "> cleaning up..."
-dev:
+build:  	## build development larissa binary
+	@echo "> building binary..."
+	@CGO_ENABLED=0 go build -o bin/larissa ./cmd/.
+
+clean:		## remove build artifacts
+	@echo "> removing artifacts..."
+	@rm -r bin/*
+
+dev:  		## start development environment
 	@echo "> starting dev environment..."
-image:
+
+image: 		## build docker image
 	@echo "> building docker image..."
-install:
+
+install: 	## install client cli
 	@echo "> installing cli..."
 
-release: ## build the larissa server with version number
+release:	## build the larissa server with version number
+	@echo "> creating release binaries..."
 	@CGO_ENABLED=0 GOOS=windows GOARCH=amd64 $(GOPROXY) go build -ldflags $(BUILD_FLAGS) -o bin/larissa_windows ./cmd/.
 	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOPROXY) go build -ldflags $(BUILD_FLAGS) -o bin/larissa_linux ./cmd/.
 	@CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 $(GOPROXY) go build -ldflags $(BUILD_FLAGS) -o bin/larissa_darwin ./cmd/.
 
-test:
+test:		## run unit tests
 	@echo "> running unit tests..."
 	@go test $(GOFILES)
-tidy:
+
+tidy:		## install dependencies
 	@echo "> downloading dependincies..."
 
-
-help: ## display help page
+.PHONY: help
+help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
