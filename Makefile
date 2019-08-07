@@ -7,12 +7,14 @@ GOFILES=$(shell go list ./... | grep -v /vendor/)
 IMAGE_DEV_TAG=dev
 IMAGE_TAG:=tag
 PROJECTNAME=$(shell basename "$(PWD)"
+GOPROXY =$("https://proxy.golang.org")
+BUILD_FLAGS = "-X github.com/rugwirobaker/larissa/pkg/build.version=$(VERSION) -X github.com/rugwirobaker/larissa/pkg/build.buildDate=$(DATE)"
 
 all: binary
 
 build:
 	@echo "> building binaries..."
-	CGO_ENABLED=0 go build -o bin/larissa-dev ./cmd/.
+	CGO_ENABLED=0 go build -o bin/larissa ./cmd/.
 clean:
 	@echo "> cleaning up..."
 dev:
@@ -22,8 +24,10 @@ image:
 install:
 	@echo "> installing cli..."
 
-release: ## build the athens proxy with version number
-	CGO_ENABLED=0 GOPROXY="https://proxy.golang.org" go build -ldflags "-X github.com/rugwirobaker/larissa/pkg/larissa.version=$(VERSION) -X github.com/rugwirobaker/larissa/pkg/larissa.buildDate=$(DATE)" -o bin/larissa ./cmd/.
+release: ## build the larissa server with version number
+	@CGO_ENABLED=0 GOOS=windows GOARCH=amd64 $(GOPROXY) go build -ldflags $(BUILD_FLAGS) -o bin/larissa_windows ./cmd/.
+	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOPROXY) go build -ldflags $(BUILD_FLAGS) -o bin/larissa_linux ./cmd/.
+	@CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 $(GOPROXY) go build -ldflags $(BUILD_FLAGS) -o bin/larissa_darwin ./cmd/.
 
 test:
 	@echo "> running unit tests..."
