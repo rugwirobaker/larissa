@@ -1,9 +1,14 @@
 package larissa
 
+import (
+	"github.com/rugwirobaker/larissa/pkg/storage"
+	"github.com/rugwirobaker/larissa/pkg/types"
+)
+
 // Service descirbes the user acceible interface to end users
 type Service interface {
 	Put(path string, content []byte) error
-	Get(path string) (*Object, error)
+	Get(path string) (*types.Object, error)
 	Del(path string) error
 	Exists(path string) bool
 }
@@ -11,11 +16,11 @@ type Service interface {
 var _ (Service) = (*service)(nil)
 
 type service struct {
-	backend Backend
+	backend storage.Backend
 }
 
 // New creates a new larissa service
-func New(backend Backend) Service {
+func New(backend storage.Backend) Service {
 	return &service{backend}
 }
 
@@ -23,7 +28,7 @@ func (svc *service) Put(path string, content []byte) error {
 	return svc.backend.Put(path, content)
 }
 
-func (svc *service) Get(path string) (*Object, error) {
+func (svc *service) Get(path string) (*types.Object, error) {
 	return svc.backend.Get(path)
 }
 

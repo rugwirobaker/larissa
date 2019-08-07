@@ -1,4 +1,4 @@
-package larissa
+package handlers
 
 import (
 	"encoding/json"
@@ -6,16 +6,22 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
+	"github.com/rugwirobaker/larissa/pkg/larissa"
+
+	"github.com/rugwirobaker/larissa/pkg/build"
+
 	log "github.com/sirupsen/logrus"
 )
 
 // HTTPHandler describes an HTTP API to larissa.Service
 type HTTPHandler struct {
-	svc Service
+	svc larissa.Service
 }
 
 // NewHTTPHandler creates a new instance of HTTPHandler
-func NewHTTPHandler(svc Service) HTTPHandler {
+func NewHTTPHandler(svc larissa.Service) HTTPHandler {
 	return HTTPHandler{svc}
 }
 
@@ -27,38 +33,54 @@ func (handler HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Build returns larissa build information
 func (handler HTTPHandler) Build(w http.ResponseWriter, r *http.Request) {
-	encodeRes(w, Data())
+	encodeRes(w, build.Data())
 }
 
 // Put ..
 func (handler HTTPHandler) Put(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	bucket := vars["bucket"]
+	name := vars["name"]
+
 	encodeRes(w, struct {
 		Message string `json:"message"`
-	}{"you have reached the put handler"},
+	}{fmt.Sprintf("save `%s.png` to `%s` bucket", name, bucket)},
 	)
 }
 
 // Get ...
 func (handler HTTPHandler) Get(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	bucket := vars["bucket"]
+	name := vars["name"]
+
 	encodeRes(w, struct {
 		Message string `json:"message"`
-	}{"you have reached the get handler"},
+	}{fmt.Sprintf("get `%s.png` from `%s` bucket", name, bucket)},
 	)
 }
 
 // Del ...
 func (handler HTTPHandler) Del(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	bucket := vars["bucket"]
+	name := vars["name"]
+
 	encodeRes(w, struct {
 		Message string `json:"message"`
-	}{"you have reached the delete handler"},
+	}{fmt.Sprintf("delete `%s.png` from `%s` bucket", name, bucket)},
 	)
 }
 
 // Exists ...
 func (handler HTTPHandler) Exists(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	bucket := vars["bucket"]
+	name := vars["name"]
+
 	encodeRes(w, struct {
 		Message string `json:"message"`
-	}{"you have reached the exists handler"},
+	}{fmt.Sprintf("find `%s.png` from `%s` bucket", name, bucket)},
 	)
 }
 
