@@ -7,10 +7,10 @@ import (
 
 // Service descirbes the user acceible interface to end users
 type Service interface {
-	Put(path string, content []byte) error
-	Get(path string) (*types.Object, error)
-	Del(path string) error
-	Exists(path string) bool
+	Put(file, bucket string, content []byte) error
+	Get(file, bucket string) (*types.Object, error)
+	Del(file, bucket string) error
+	Exists(file, bucket string) bool
 }
 
 var _ (Service) = (*service)(nil)
@@ -24,18 +24,18 @@ func New(backend storage.Backend) Service {
 	return &service{backend}
 }
 
-func (svc *service) Put(path string, content []byte) error {
-	return svc.backend.Put(path, content)
+func (svc *service) Put(file, bucket string, content []byte) error {
+	return svc.backend.Put(file, bucket, content)
 }
 
-func (svc *service) Get(path string) (*types.Object, error) {
-	return svc.backend.Get(path)
+func (svc *service) Get(file, bucket string) (*types.Object, error) {
+	return svc.backend.Get(file, bucket)
 }
 
-func (svc *service) Del(path string) error {
-	return svc.backend.Del(path)
+func (svc *service) Del(file, bucket string) error {
+	return svc.backend.Del(file, bucket)
 }
 
-func (svc *service) Exists(path string) bool {
-	return svc.backend.Exists(path)
+func (svc *service) Exists(file, bucket string) bool {
+	return svc.backend.Exists(file, bucket)
 }

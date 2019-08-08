@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -14,6 +15,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 )
+
+const maxUploadSize = 50 * 1024 * 1024 // 50 mb
 
 // HTTPHandler describes an HTTP API to larissa.Service
 type HTTPHandler struct {
@@ -40,12 +43,44 @@ func (handler HTTPHandler) Build(w http.ResponseWriter, r *http.Request) {
 func (handler HTTPHandler) Put(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	bucket := vars["bucket"]
-	name := vars["name"]
 
-	encodeRes(w, struct {
-		Message string `json:"message"`
-	}{fmt.Sprintf("save `%s.png` to `%s` bucket", name, bucket)},
-	)
+	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
+
+	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
+		http.Error(w, "{\"message\": \"could not create file: "+err.Error()+"\"}", http.StatusBadRequest)
+		return
+	}
+
+	file, header, err := r.FormFile("image")
+	if err != nil {
+		http.Error(w, "{\"message\": \"could not save: "+err.Error()+"\"}", 400)
+		return
+	}
+	defer file.Close()
+
+	content, err := ioutil.ReadAll(file)
+	if err != nil {
+		http.Error(w, "{\"message\": \"could save file: "+err.Error()+"\"}", 400)
+		return
+	}
+
+	// get content type
+	_, err = ext(content)
+	if err != nil {
+		http.Error(w, "{\"message\": \"could save file: "+err.Error()+"\"}", 400)
+		return
+	}
+
+	var filename = header.Filename
+
+	if err := handler.svc.Put(filename, bucket, content); err != nil {
+		http.Error(w, "{\"message\": \"could not create file: "+err.Error()+"\"}", 400)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	fmt.Fprintf(w, "{\"message\": \"new file: %s/%s created\"}", bucket, filename)
 }
 
 // Get ...

@@ -2,42 +2,69 @@ package fs
 
 import (
 	"fmt"
+	"path/filepath"
+
+	"github.com/rugwirobaker/larissa/pkg/errors"
 
 	"github.com/rugwirobaker/larissa/pkg/storage"
 	"github.com/rugwirobaker/larissa/pkg/types"
 	"github.com/spf13/afero"
 )
 
-var _ (storage.Backend) = (*fsBackend)(nil)
+var _ (storage.Backend) = (*backend)(nil)
 
-// fsBackend is a filesystem implementation of larissa storage Backend
+// backend is a filesystem implementation of larissa storage Backend
 // that uses afero FileSystem Abstraction.
-type fsBackend struct {
-	rootDir string
-	fs      afero.Fs
+type backend struct {
+	rootDir    string
+	filesystem afero.Fs
 }
 
 // NewBackend creates a new storage Backend instance.
 func NewBackend(rootDir string, filesystem afero.Fs) (storage.Backend, error) {
+	const op errors.Op = "fs.NewStorage"
+
 	exists, err := afero.Exists(filesystem, rootDir)
 	if err != nil {
-		return nil, fmt.Errorf("could not check if root directory `%s` exists: %s", rootDir, err)
+		return nil, errors.E(op, fmt.Errorf("could not check if root directory `%s` exists: %s", rootDir, err))
 	}
 	if !exists {
-		return nil, fmt.Errorf("root directory `%s` does not exist", rootDir)
+		return nil, errors.E(op, fmt.Errorf("root directory `%s` does not exist", rootDir))
 	}
-	return &fsBackend{rootDir: rootDir, fs: filesystem}, nil
+	return &backend{rootDir: rootDir, filesystem: filesystem}, nil
 }
 
-func (fs *fsBackend) Put(path string, content []byte) error {
+// bucket gets bucket(subfolder)
+func (fs *backend) bucketLocation(bucket string) string {
+	return filepath.Join(fs.rootDir, bucket)
+}
+
+func (fs *backend) Put(file, bucket string, content []byte) error {
+	const op errors.Op = "fs.Put"
+
+	path := fs.bucketLocation(bucket)
+	exists, err := afero.DirExists(fs.filesystem, path)
+	if err != nil {
+		return errors.E(op, err, errors.O(file), errors.B(bucket))
+	}
+	if !exists {
+		fs.filesystem.MkdirAll(path, 0777)
+	}
+	err = afero.WriteFile(fs.filesystem, filepath.Join(path, file), content, 0666)
+	if err != nil {
+		return errors.E(op, err, errors.O(file), errors.B(bucket))
+	}
 	return nil
 }
-func (fs *fsBackend) Get(path string) (*types.Object, error) {
+func (fs *backend) Get(file, bucket string) (*types.Object, error) {
+	const op errors.Op = "fs.Get"
 	return nil, nil
 }
-func (fs *fsBackend) Del(path string) error {
+func (fs *backend) Del(file, bucket string) error {
+	const op errors.Op = "fs.Del"
 	return nil
 }
-func (fs *fsBackend) Exists(path string) bool {
+func (fs *backend) Exists(file, bucket string) bool {
+	const op errors.Op = "fs.Exists"
 	return false
 }

@@ -59,10 +59,10 @@ func main() {
 	router.NotFoundHandler = http.HandlerFunc(handlers.ErrorHandler)
 	router.Handle("/", httpHandler)
 	router.HandleFunc("/build", httpHandler.Build).Methods("GET")
-	router.HandleFunc("/get/{bucket}/{handle}", httpHandler.Get).Methods("GET")
-	router.HandleFunc("/put/{bucket}/{handle}", httpHandler.Put).Methods("PUT")
-	router.HandleFunc("/del/{bucket}/{handle}", httpHandler.Del).Methods("DELETE")
-	router.HandleFunc("/exists/{bucket}/{handle}", httpHandler.Exists).Methods("GET")
+	router.HandleFunc("/get/{bucket}/{name}", httpHandler.Get).Methods("GET")
+	router.HandleFunc("/put/{bucket}", httpHandler.Put).Methods("PUT")
+	router.HandleFunc("/del/{bucket}/{name}", httpHandler.Del).Methods("DELETE")
+	router.HandleFunc("/exists/{bucket}/{name}", httpHandler.Exists).Methods("GET")
 
 	// start the server
 	server := &http.Server{Addr: ":" + conf.Port, Handler: router}

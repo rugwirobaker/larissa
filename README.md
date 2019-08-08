@@ -18,3 +18,8 @@ As of now larissa is still a prototype with the design principles not yet set.
 * `/del`: is meant to delete an image
 * `/exists`: verifies whether an image has been saved
 * `/build`: gives larissa build information(version, buildDate)
+
+**goals**
+* filter/limit file mimetype (png, jpeg, gif initialy)
+* multifile upload
+* serve images according to given size and compression parameters
