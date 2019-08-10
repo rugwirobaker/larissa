@@ -35,14 +35,18 @@ func NewBackend(rootDir string, filesystem afero.Fs) (storage.Backend, error) {
 }
 
 // bucket gets bucket(subfolder)
-func (fs *backend) bucketLocation(bucket string) string {
+func (fs *backend) bucketLoc(bucket string) string {
 	return filepath.Join(fs.rootDir, bucket)
+}
+
+func (fs *backend) fileLoc(bucket, file string) string {
+	return filepath.Join(fs.rootDir, bucket, file)
 }
 
 func (fs *backend) Put(file, bucket string, content []byte) error {
 	const op errors.Op = "fs.Put"
 
-	path := fs.bucketLocation(bucket)
+	path := fs.bucketLoc(bucket)
 	exists, err := afero.DirExists(fs.filesystem, path)
 	if err != nil {
 		return errors.E(op, err, errors.O(file), errors.B(bucket))
@@ -58,7 +62,22 @@ func (fs *backend) Put(file, bucket string, content []byte) error {
 }
 func (fs *backend) Get(file, bucket string) (*types.Object, error) {
 	const op errors.Op = "fs.Get"
-	return nil, nil
+
+	path := fs.fileLoc(bucket, file)
+	exists, err := afero.Exists(fs.filesystem, path)
+	if err != nil {
+		return nil, errors.E(op, err, errors.O(file), errors.B(bucket), errors.KindNotFound)
+	}
+	if !exists {
+		return nil, errors.E(op, errors.O(file), errors.B(bucket), errors.KindNotFound)
+	}
+
+	content, err := afero.ReadFile(fs.filesystem, path)
+	if err != nil {
+		return nil, errors.E(op, err, errors.O(file), errors.B(bucket), errors.KindNotFound)
+	}
+
+	return &types.Object{Name: file, Content: content}, nil
 }
 func (fs *backend) Del(file, bucket string) error {
 	const op errors.Op = "fs.Del"

@@ -23,6 +23,9 @@ type HTTPHandler struct {
 	svc larissa.Service
 }
 
+// GetObjectRes describes larissa object response
+type GetObjectRes struct{}
+
 // NewHTTPHandler creates a new instance of HTTPHandler
 func NewHTTPHandler(svc larissa.Service) HTTPHandler {
 	return HTTPHandler{svc}
@@ -89,10 +92,12 @@ func (handler HTTPHandler) Get(w http.ResponseWriter, r *http.Request) {
 	bucket := vars["bucket"]
 	name := vars["name"]
 
-	encodeRes(w, struct {
-		Message string `json:"message"`
-	}{fmt.Sprintf("get `%s.png` from `%s` bucket", name, bucket)},
-	)
+	object, err := handler.svc.Get(name, bucket)
+	if err != nil {
+		http.Error(w, "{\"message\": \"could not get file: "+err.Error()+"\"}", http.StatusNotFound)
+		return
+	}
+	encodeData(w, "", object)
 }
 
 // Del ...
@@ -137,5 +142,12 @@ func encodeRes(w io.Writer, i interface{}) {
 		log.WithFields(log.Fields{
 			"route": "mustEncode",
 		}).Errorf("error encoding response to json: %s", err.Error())
+	}
+}
+
+func encodeData(w io.Writer, contentType string, i interface{}) {
+	if headered, ok := w.(http.ResponseWriter); ok {
+		headered.Header().Set("Cache-Control", "no-cache")
+		headered.Header().Set("Content-Type", contentType)
 	}
 }

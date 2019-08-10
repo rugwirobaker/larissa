@@ -58,7 +58,7 @@ func Test_backend_bucketLocation(t *testing.T) {
 				rootDir:    tt.fields.rootDir,
 				filesystem: tt.fields.filesystem,
 			}
-			if got := fs.bucketLocation(tt.args.bucket); got != tt.want {
+			if got := fs.bucketLoc(tt.args.bucket); got != tt.want {
 				t.Errorf("backend.bucketLocation() = %v, want %v", got, tt.want)
 			}
 		})
