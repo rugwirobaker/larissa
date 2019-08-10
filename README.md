@@ -19,11 +19,13 @@ As of now larissa is still a prototype with the design principles not yet set.
 
 ## usage
 
-| **function**          | **Endpoint**            | **Options** | **Details** | 
-|:--------------------- |:----------------------- |:------------|:------------|
-| upload image          |`"/put/:bucket"`         |             |             |
-| dowload image         |`"/get/:bucket/:image"`  |             |             |           
-| delete image          |`"/del/:bucket/:image"`  |             |             |           
-| verify image existance|`"/exists:bucket/:image"`|             |             |
-| larissa buiild info   |`"/build"`               |             |             |
+| **function**          | **Endpoint**            | **Options**                   | **Details** | 
+|:--------------------- |:----------------------- |:------------------------------|:------------|
+| larissa buiild info   |`"/build"`               |                               |             |
+| server health status  |`"/health"`              |                               |             | 
+| upload image          |`"/put/:bucket"`         |Form Field:`image:"image_name"`|             |
+| dowload image         |`"/get/:bucket/:image"`  |                               |             |           
+| delete image          |`"/del/:bucket/:image"`  |                               |             |           
+| verify image existance|`"/exists:bucket/:image"`|                               |             |
+
 

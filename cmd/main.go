@@ -47,15 +47,19 @@ func main() {
 	// create service
 	service := larissa.New(storage)
 
+	//logger
+	logger := log.New()
+
 	// create HTTPHandler
-	httpHandler := handlers.NewHTTPHandler(service)
+	httpHandler := handlers.NewHTTPHandler(service, logger)
 
 	// create a router
 	router := mux.NewRouter()
+	router.Use(httpHandler.LogRequest)
 	router.NotFoundHandler = http.HandlerFunc(handlers.ErrorHandler)
 	router.Handle("/", httpHandler)
 	router.HandleFunc("/build", httpHandler.Build).Methods("GET")
-	router.HandleFunc("/health", httpHandler.Build).Methods("GET")
+	router.HandleFunc("/health", httpHandler.Health).Methods("GET")
 	router.HandleFunc("/get/{bucket}/{name}", httpHandler.Get).Methods("GET")
 	router.HandleFunc("/put/{bucket}", httpHandler.Put).Methods("PUT")
 	router.HandleFunc("/del/{bucket}/{name}", httpHandler.Del).Methods("DELETE")

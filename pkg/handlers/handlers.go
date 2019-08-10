@@ -20,15 +20,16 @@ const maxUploadSize = 50 * 1024 * 1024 // 50 mb
 
 // HTTPHandler describes an HTTP API to larissa.Service
 type HTTPHandler struct {
-	svc larissa.Service
+	svc    larissa.Service
+	logger *log.Logger
 }
 
 // GetObjectRes describes larissa object response
 type GetObjectRes struct{}
 
 // NewHTTPHandler creates a new instance of HTTPHandler
-func NewHTTPHandler(svc larissa.Service) HTTPHandler {
-	return HTTPHandler{svc}
+func NewHTTPHandler(svc larissa.Service, logger *log.Logger) HTTPHandler {
+	return HTTPHandler{svc, logger}
 }
 
 func (handler HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +41,11 @@ func (handler HTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // Build returns larissa build information
 func (handler HTTPHandler) Build(w http.ResponseWriter, r *http.Request) {
 	encodeRes(w, build.Data())
+}
+
+// Health indicates the health of the server
+func (handler HTTPHandler) Health(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }
 
 // Put ..
