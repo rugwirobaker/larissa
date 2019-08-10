@@ -7,6 +7,10 @@ import (
 )
 
 func ext(content []byte) (string, error) {
-	filetype := http.DetectContentType(content)
+	filetype := mime(content)
 	return types.Extention(filetype)
+}
+
+func mime(content []byte) string {
+	return http.DetectContentType(content)
 }

@@ -97,7 +97,9 @@ func (handler HTTPHandler) Get(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "{\"message\": \"could not get file: "+err.Error()+"\"}", http.StatusNotFound)
 		return
 	}
-	encodeData(w, "", object)
+
+	contentType := mime(object.Content)
+	encodeData(w, contentType, object.Content)
 }
 
 // Del ...
@@ -145,9 +147,10 @@ func encodeRes(w io.Writer, i interface{}) {
 	}
 }
 
-func encodeData(w io.Writer, contentType string, i interface{}) {
+func encodeData(w io.Writer, contentType string, data []byte) {
 	if headered, ok := w.(http.ResponseWriter); ok {
 		headered.Header().Set("Cache-Control", "no-cache")
 		headered.Header().Set("Content-Type", contentType)
 	}
+	w.Write(data)
 }
