@@ -20,7 +20,7 @@ As of now larissa is still a prototype with the design principles not yet set.
 ## usage
 
 | **function**          | **Endpoint**            | **Options** | **Details** | 
-|:---------------------:|:-----------------------:|------------:|:-----------:|
+|:--------------------- |:----------------------- |:------------|:------------|
 | upload image          |`"/put/:bucket"`         |             |             |
 | dowload image         |`"/get/:bucket/:image"`  |             |             |           
 | delete image          |`"/del/:bucket/:image"`  |             |             |           
