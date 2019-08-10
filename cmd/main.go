@@ -12,10 +12,6 @@ import (
 
 	"github.com/rugwirobaker/larissa/pkg/config"
 
-	"github.com/spf13/afero"
-
-	"github.com/rugwirobaker/larissa/pkg/storage/fs"
-
 	"github.com/rugwirobaker/larissa/pkg/handlers"
 
 	log "github.com/sirupsen/logrus"
@@ -42,14 +38,14 @@ func main() {
 		log.Fatalf("could not load config file: %v", err)
 	}
 
-	// set the storage backend
-	st, err := fs.NewBackend(conf.RootPath, afero.NewOsFs())
+	// get storage backend
+	storage, err := GetStorage(conf.StorageType, conf.Storage)
 	if err != nil {
 		log.Fatalf("larissa failed to start: %s", err.Error())
 	}
 
 	// create service
-	service := larissa.New(st)
+	service := larissa.New(storage)
 
 	// create HTTPHandler
 	httpHandler := handlers.NewHTTPHandler(service)
@@ -59,6 +55,7 @@ func main() {
 	router.NotFoundHandler = http.HandlerFunc(handlers.ErrorHandler)
 	router.Handle("/", httpHandler)
 	router.HandleFunc("/build", httpHandler.Build).Methods("GET")
+	router.HandleFunc("/health", httpHandler.Build).Methods("GET")
 	router.HandleFunc("/get/{bucket}/{name}", httpHandler.Get).Methods("GET")
 	router.HandleFunc("/put/{bucket}", httpHandler.Put).Methods("PUT")
 	router.HandleFunc("/del/{bucket}/{name}", httpHandler.Del).Methods("DELETE")
