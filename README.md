@@ -12,11 +12,46 @@ As of now larissa is still a prototype with the design principles not yet set.
 * parameter configured processing
 
 ## Run your own
-**steps to run it on your machine(linux)**
-1. `git clone github.com/rugwirobaker/larissa`
-2. `make build`
-3. `./bin/larissa`
 
+**Natively**
+If you're inside GOPATH, make sure GO111MODULE=on, if you're outside GOPATH, then Go Modules are on by default. 
+The main package is inside cmd and is run like any go project as follows:
+
+1. clone the repository:
+
+    ```$ git clone github.com/rugwirobaker/larissa```
+
+3. cd into the larissa directory:
+    
+    ```$ cd larissa```
+2. build the binary:
+
+    ```$ make build```
+3. the outputed binary is saved at the bin directory, and tou can run it with
+
+    ```$ ./bin/larissa```
+4. You can also pass it an optional configuraion file:
+
+    ```$ ./bin/larissa --config_file "path/config_file"```
+
+**using docker**
+
+using docker compose this options does the following for you:
+1. build the larissa binary from scratch
+2. add larissa configuration
+3. run larissa server
+
+For this to work you need `docker` and `docker-compose` setup on your computer
+
+```$ make dev```
+
+To rebuild the docker image
+
+```$ make dev-build```
+
+By default in all cases larissa is listening at:
+
+```localhost:3000```
 ## usage
 
 | **function**          | **Endpoint**            | **Options**                   | **Details** | 
@@ -28,4 +63,5 @@ As of now larissa is still a prototype with the design principles not yet set.
 | delete image          |`"/del/:bucket/:image"`  |                               |             |           
 | verify image existance|`"/exists:bucket/:image"`|                               |             |
 
-
+## Contributing
+As of now PRs are not yet accepted. The project's direaction is still shaping up

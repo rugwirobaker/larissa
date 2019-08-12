@@ -1,0 +1,15 @@
+version: "3"
+
+services: 
+  larissa:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: larissa
+    ports:
+      - 3000:3000
+    volumes: 
+      - data:/data
+
+volumes: 
+  data:

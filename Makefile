@@ -22,7 +22,13 @@ clean:		## remove build artifacts
 
 dev:  		## start development environment
 	@echo "> starting dev environment..."
-
+	@docker-compose up -d
+dev-build:  		## start development environment
+	@echo "> starting dev environment..."
+	@docker-compose up -d --build
+dev-teardown:
+	@echo "> cleaning dev environment..."
+		@docker-compose down -v
 image: 		## build docker image
 	@echo "> building docker image..."
 
