@@ -7,9 +7,11 @@ Larissa is an elegent image server accessible via a S3 like HTTP API.
 As of now larissa is still a prototype with the design principles not yet set.
 
 ## Goals
+* support more backends(mongodb, minio, CloudStore, S3, etc...)
 * filter/limit file mimetype (png, jpeg, gif initialy)
 * multifile upload
 * parameter configured processing
+* access sdk for major languages(Go, Js, Python, Php,...)
 
 ## Run your own
 
@@ -63,5 +65,10 @@ By default in all cases larissa is listening at:
 | delete image          |`"/del/:bucket/:image"`  |                               | **DELETE**  |           
 | verify image existance|`"/exists:bucket/:image"`|                               | **GET**     |
 
+
+## Development
+Tips:
+
+* the errors package follows the example of [upspin project's errors](https://commandcenter.blogspot.com/2017/12/error-handling-in-upspin.html)
 ## Contributing
 As of now PRs are not yet accepted. The project's direaction is still shaping up
