@@ -13,12 +13,12 @@ import (
 )
 
 //ProtocolHandler returns an http.Handler
-type ProtocolHandler func(proto larissa.Service, lggr log.Entry) http.Handler
+type ProtocolHandler func(proctl larissa.Protocol, lggr log.Entry) http.Handler
 
 // HandlerOpts are the generic options
 // for a ProtocolHandler
 type HandlerOpts struct {
-	Protocol larissa.Service
+	Protocol larissa.Protocol
 	Logger   *log.Logger
 }
 

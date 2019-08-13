@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -14,17 +13,20 @@ import (
 const PathDel = "/del/{bucket}/{name}"
 
 // Del ...
-func Del(proto larissa.Service, lggr log.Entry) http.Handler {
+func Del(proctl larissa.Protocol, lggr log.Entry) http.Handler {
 	const op errors.Op = "handlers.Del"
 	f := func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		bucket := vars["bucket"]
 		name := vars["name"]
 
-		encodeRes(w, struct {
-			Message string `json:"message"`
-		}{fmt.Sprintf("delete `%s.png` from `%s` bucket", name, bucket)},
-		)
+		if err := proctl.Del(name, bucket); err != nil {
+			severityLevel := errors.Expect(err, errors.KindNotFound)
+			err = errors.E(op, err, severityLevel)
+			lggr.SystemErr(err)
+			w.WriteHeader(errors.Kind(err))
+			return
+		}
 	}
 	return http.HandlerFunc(f)
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/rugwirobaker/larissa/pkg/larissa"
 )
 
-func newService() larissa.Service {
+func newService() larissa.Protocol {
 	return nil
 }
 

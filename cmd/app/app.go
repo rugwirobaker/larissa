@@ -32,7 +32,7 @@ func Bootstrap(conf *config.Config) (http.Handler, error) {
 	}
 	lggr := log.New(conf.CloudRuntime, logLvl)
 
-	// create service
+	// create protocol
 	protocol := larissa.New(storage)
 
 	//new router

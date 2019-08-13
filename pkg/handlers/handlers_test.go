@@ -6,12 +6,12 @@ import (
 	"github.com/rugwirobaker/larissa/pkg/larissa"
 )
 
-func newService() larissa.Service {
+func newService() larissa.Protocol {
 	return nil
 }
 
-// func newHTTPHandler(svc larissa.Service, logger *logrus.Logger) handlers.HTTPHandler {
-// 	return handlers.NewHTTPHandler(svc, logger)
+// func newHTTPHandler(proctl larissa.Protocol, logger *logrus.Logger) handlers.HTTPHandler {
+// 	return handlers.NewHTTPHandler(proctl, logger)
 // }
 
 func TestPutHandler(t *testing.T) {}

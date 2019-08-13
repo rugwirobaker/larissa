@@ -36,40 +36,50 @@ func TestNewBackend(t *testing.T) {
 	}
 }
 
-func Test_backend_bucketLocation(t *testing.T) {
-	type fields struct {
-		rootDir    string
-		filesystem afero.Fs
-	}
+func Test_backend_bucketLoc(t *testing.T) {
 	type args struct {
 		bucket string
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   string
+		name string
+		fs   *backend
+		args args
+		want string
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fs := &backend{
-				rootDir:    tt.fields.rootDir,
-				filesystem: tt.fields.filesystem,
+			if got := tt.fs.bucketLoc(tt.args.bucket); got != tt.want {
+				t.Errorf("backend.bucketLoc() = %v, want %v", got, tt.want)
 			}
-			if got := fs.bucketLoc(tt.args.bucket); got != tt.want {
-				t.Errorf("backend.bucketLocation() = %v, want %v", got, tt.want)
+		})
+	}
+}
+
+func Test_backend_fileLoc(t *testing.T) {
+	type args struct {
+		bucket string
+		file   string
+	}
+	tests := []struct {
+		name string
+		fs   *backend
+		args args
+		want string
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.fs.fileLoc(tt.args.bucket, tt.args.file); got != tt.want {
+				t.Errorf("backend.fileLoc() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 func Test_backend_Put(t *testing.T) {
-	type fields struct {
-		rootDir    string
-		filesystem afero.Fs
-	}
 	type args struct {
 		file    string
 		bucket  string
@@ -77,7 +87,7 @@ func Test_backend_Put(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
+		fs      *backend
 		args    args
 		wantErr bool
 	}{
@@ -85,11 +95,7 @@ func Test_backend_Put(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fs := &backend{
-				rootDir:    tt.fields.rootDir,
-				filesystem: tt.fields.filesystem,
-			}
-			if err := fs.Put(tt.args.file, tt.args.bucket, tt.args.content); (err != nil) != tt.wantErr {
+			if err := tt.fs.Put(tt.args.file, tt.args.bucket, tt.args.content); (err != nil) != tt.wantErr {
 				t.Errorf("backend.Put() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -97,17 +103,13 @@ func Test_backend_Put(t *testing.T) {
 }
 
 func Test_backend_Get(t *testing.T) {
-	type fields struct {
-		rootDir    string
-		filesystem afero.Fs
-	}
 	type args struct {
 		file   string
 		bucket string
 	}
 	tests := []struct {
 		name    string
-		fields  fields
+		fs      *backend
 		args    args
 		want    *types.Object
 		wantErr bool
@@ -116,11 +118,7 @@ func Test_backend_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fs := &backend{
-				rootDir:    tt.fields.rootDir,
-				filesystem: tt.fields.filesystem,
-			}
-			got, err := fs.Get(tt.args.file, tt.args.bucket)
+			got, err := tt.fs.Get(tt.args.file, tt.args.bucket)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("backend.Get() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -133,17 +131,13 @@ func Test_backend_Get(t *testing.T) {
 }
 
 func Test_backend_Del(t *testing.T) {
-	type fields struct {
-		rootDir    string
-		filesystem afero.Fs
-	}
 	type args struct {
 		file   string
 		bucket string
 	}
 	tests := []struct {
 		name    string
-		fields  fields
+		fs      *backend
 		args    args
 		wantErr bool
 	}{
@@ -151,11 +145,7 @@ func Test_backend_Del(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fs := &backend{
-				rootDir:    tt.fields.rootDir,
-				filesystem: tt.fields.filesystem,
-			}
-			if err := fs.Del(tt.args.file, tt.args.bucket); (err != nil) != tt.wantErr {
+			if err := tt.fs.Del(tt.args.file, tt.args.bucket); (err != nil) != tt.wantErr {
 				t.Errorf("backend.Del() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -163,30 +153,22 @@ func Test_backend_Del(t *testing.T) {
 }
 
 func Test_backend_Exists(t *testing.T) {
-	type fields struct {
-		rootDir    string
-		filesystem afero.Fs
-	}
 	type args struct {
 		file   string
 		bucket string
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   bool
+		name    string
+		fs      *backend
+		args    args
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fs := &backend{
-				rootDir:    tt.fields.rootDir,
-				filesystem: tt.fields.filesystem,
-			}
-			if got := fs.Exists(tt.args.file, tt.args.bucket); got != tt.want {
-				t.Errorf("backend.Exists() = %v, want %v", got, tt.want)
+			if err := tt.fs.Exists(tt.args.file, tt.args.bucket); (err != nil) != tt.wantErr {
+				t.Errorf("backend.Exists() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

@@ -81,9 +81,33 @@ func (fs *backend) Get(file, bucket string) (*types.Object, error) {
 }
 func (fs *backend) Del(file, bucket string) error {
 	const op errors.Op = "fs.Del"
+
+	path := fs.fileLoc(bucket, file)
+	exists, err := afero.Exists(fs.filesystem, path)
+	if err != nil {
+		return errors.E(op, err, errors.O(file), errors.B(bucket), errors.KindNotFound)
+	}
+	if !exists {
+		return errors.E(op, errors.O(file), errors.B(bucket), errors.KindNotFound)
+	}
+	if err := fs.filesystem.Remove(path); err != nil {
+		return errors.E(op, errors.O(file), errors.B(bucket), errors.KindNotFound)
+	}
+
 	return nil
 }
-func (fs *backend) Exists(file, bucket string) bool {
+func (fs *backend) Exists(file, bucket string) error {
 	const op errors.Op = "fs.Exists"
-	return false
+
+	path := fs.fileLoc(bucket, file)
+
+	exists, err := afero.Exists(fs.filesystem, path)
+	if err != nil {
+		return errors.E(op, err, errors.O(file), errors.B(bucket), errors.KindNotFound)
+	}
+
+	if !exists {
+		return errors.E(op, err, errors.O(file), errors.B(bucket), errors.KindNotFound)
+	}
+	return nil
 }

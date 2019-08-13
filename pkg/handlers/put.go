@@ -17,7 +17,7 @@ const PathPut = "/put/{bucket}"
 const maxUploadSize = 50 * 1024 * 1024 // 50 mb
 
 // Put handles file http file uploads
-func Put(proto larissa.Service, lggr log.Entry) http.Handler {
+func Put(proctl larissa.Protocol, lggr log.Entry) http.Handler {
 	const op errors.Op = "handlers.Put"
 
 	f := func(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +57,7 @@ func Put(proto larissa.Service, lggr log.Entry) http.Handler {
 
 		var filename = header.Filename
 
-		if err := proto.Put(filename, bucket, content); err != nil {
+		if err := proctl.Put(filename, bucket, content); err != nil {
 			severityLevel := errors.Expect(err, errors.KindNotFound)
 			err = errors.E(op, err, severityLevel)
 			lggr.SystemErr(err)

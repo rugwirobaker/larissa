@@ -5,7 +5,7 @@ import (
 )
 
 // Logger is the main struct that any larissa
-// internal service should use to communicate things.
+// internal protocol should use to communicate things.
 type Logger struct {
 	*logrus.Logger
 }

@@ -54,14 +54,14 @@ By default in all cases larissa is listening at:
 ```localhost:3000```
 ## usage
 
-| **function**          | **Endpoint**            | **Options**                   | **Details** | 
+| **function**          | **Endpoint**            | **Options**                   | **Method** | 
 |:--------------------- |:----------------------- |:------------------------------|:------------|
-| larissa buiild info   |`"/build"`               |                               |             |
-| server health status  |`"/health"`              |                               |             | 
-| upload image          |`"/put/:bucket"`         |Form Field:`image:"image_name"`|             |
-| dowload image         |`"/get/:bucket/:image"`  |                               |             |           
-| delete image          |`"/del/:bucket/:image"`  |                               |             |           
-| verify image existance|`"/exists:bucket/:image"`|                               |             |
+| larissa buiild info   |`"/build"`               |                               | **GET**     |
+| server health status  |`"/health"`              |                               | **GET**     | 
+| upload image          |`"/put/:bucket"`         |Form Field:`image:"image_name"`| **PUT**     |
+| dowload image         |`"/get/:bucket/:image"`  |                               | **GET**     |           
+| delete image          |`"/del/:bucket/:image"`  |                               | **DELETE**  |           
+| verify image existance|`"/exists:bucket/:image"`|                               | **GET**     |
 
 ## Contributing
 As of now PRs are not yet accepted. The project's direaction is still shaping up

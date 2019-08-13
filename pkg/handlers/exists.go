@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/rugwirobaker/larissa/pkg/errors"
@@ -15,17 +14,21 @@ import (
 const PathExists = "/exists/{bucket}/{name}"
 
 // Exists ...
-func Exists(proto larissa.Service, lggr log.Entry) http.Handler {
+func Exists(proctl larissa.Protocol, lggr log.Entry) http.Handler {
 	const op errors.Op = "handlers.Exists"
 	f := func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		bucket := vars["bucket"]
 		name := vars["name"]
 
-		encodeRes(w, struct {
-			Message string `json:"message"`
-		}{fmt.Sprintf("find `%s.png` from `%s` bucket", name, bucket)},
-		)
+		if err := proctl.Exists(name, bucket); err != nil {
+			severityLevel := errors.Expect(err, errors.KindNotFound)
+			err = errors.E(op, err, severityLevel)
+			lggr.SystemErr(err)
+			w.WriteHeader(errors.Kind(err))
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	}
 	return http.HandlerFunc(f)
 }

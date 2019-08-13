@@ -13,7 +13,7 @@ import (
 const PathGet= "/get/{bucket}/{name}"
 
 // Get ...
-func Get(proto larissa.Service, lggr log.Entry) http.Handler {
+func Get(proctl larissa.Protocol, lggr log.Entry) http.Handler {
 	const op errors.Op = "handlers.Get"
 
 	f := func(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +21,7 @@ func Get(proto larissa.Service, lggr log.Entry) http.Handler {
 		bucket := vars["bucket"]
 		name := vars["name"]
 
-		object, err := proto.Get(name, bucket)
+		object, err := proctl.Get(name, bucket)
 		if err != nil {
 			severityLevel := errors.Expect(err, errors.KindNotFound)
 			err = errors.E(op, err, severityLevel)
