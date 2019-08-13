@@ -12,7 +12,7 @@ import (
 
 //GetStorage returns as storage backend bases on configuration
 func GetStorage(storageType string, storageConfig *config.StorageConfig) (storage.Backend, error) {
-	const op errors.Op = "main.GetStorage"
+	const op errors.Op = "app.GetStorage"
 
 	switch storageType {
 	case "disk":
