@@ -3,9 +3,6 @@ package handlers_test
 import (
 	"testing"
 
-	"github.com/sirupsen/logrus"
-
-	"github.com/rugwirobaker/larissa/pkg/handlers"
 	"github.com/rugwirobaker/larissa/pkg/larissa"
 )
 
@@ -13,9 +10,9 @@ func newService() larissa.Service {
 	return nil
 }
 
-func newHTTPHandler(svc larissa.Service, logger *logrus.Logger) handlers.HTTPHandler {
-	return handlers.NewHTTPHandler(svc, logger)
-}
+// func newHTTPHandler(svc larissa.Service, logger *logrus.Logger) handlers.HTTPHandler {
+// 	return handlers.NewHTTPHandler(svc, logger)
+// }
 
 func TestPutHandler(t *testing.T) {}
 

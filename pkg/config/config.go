@@ -13,18 +13,24 @@ const defaultConfigFile = "larissa.toml"
 
 // Config provides configuration values for all components
 type Config struct {
-	Port        string `envconfig:"LARISSA_PORT"` // http port
-	StorageType string `validate:"required" envconfig:"LARISSA_STORAGE_TYPE"`
-	Storage     *StorageConfig
+	CloudRuntime string `validate:"required" envconfig:"ATHENS_CLOUD_RUNTIME"`
+	GoEnv        string `validate:"required" envconfig:"GO_ENV"`
+	Port         string `envconfig:"LARISSA_PORT"` // http port
+	LogLevel     string `validate:"required" envconfig:"ATHENS_LOG_LEVEL"`
+	StorageType  string `validate:"required" envconfig:"LARISSA_STORAGE_TYPE"`
+	Storage      *StorageConfig
 }
 
 func defaultConfig() *Config {
 	disk := &DiskConfig{"data"}
 	store := &StorageConfig{disk}
 	return &Config{
-		Port:        "3000",
-		StorageType: "disk",
-		Storage:     store,
+		CloudRuntime: "none",
+		GoEnv:        "development",
+		Port:         "3000",
+		LogLevel:     "debug",
+		StorageType:  "disk",
+		Storage:      store,
 	}
 }
 
