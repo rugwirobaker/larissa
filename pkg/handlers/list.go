@@ -3,32 +3,33 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/rugwirobaker/larissa/pkg/errors"
 	"github.com/rugwirobaker/larissa/pkg/larissa"
 	"github.com/rugwirobaker/larissa/pkg/log"
-
-	"github.com/gorilla/mux"
 )
 
-// PathExists is the http path to download files
-const PathExists = "/exists/{bucket}/{name}"
+// PathList is the http path to download files
+const PathList = "/list/{bucket}"
 
-// Exists ...
-func Exists(proctl larissa.Protocol, lggr log.Entry) http.Handler {
-	const op errors.Op = "handlers.Exists"
+// List ...
+func List(proctl larissa.Protocol, lggr log.Entry) http.Handler {
+	const op errors.Op = "handlers.List"
+
 	f := func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		bucket := vars["bucket"]
-		name := vars["name"]
 
-		if err := proctl.Exists(r.Context(), name, bucket); err != nil {
+		objects, err := proctl.List(r.Context(), bucket)
+		if err != nil {
 			severityLevel := errors.Expect(err, errors.KindNotFound)
 			err = errors.E(op, err, severityLevel)
 			lggr.SystemErr(err)
 			w.WriteHeader(errors.Kind(err))
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		encodeRes(w, objects)
 	}
+
 	return http.HandlerFunc(f)
 }

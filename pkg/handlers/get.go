@@ -10,7 +10,7 @@ import (
 )
 
 // PathGet is the http path to download files
-const PathGet= "/get/{bucket}/{name}"
+const PathGet = "/get/{bucket}/{name}"
 
 // Get ...
 func Get(proctl larissa.Protocol, lggr log.Entry) http.Handler {
@@ -21,7 +21,7 @@ func Get(proctl larissa.Protocol, lggr log.Entry) http.Handler {
 		bucket := vars["bucket"]
 		name := vars["name"]
 
-		object, err := proctl.Get(name, bucket)
+		object, err := proctl.Get(r.Context(), name, bucket)
 		if err != nil {
 			severityLevel := errors.Expect(err, errors.KindNotFound)
 			err = errors.E(op, err, severityLevel)

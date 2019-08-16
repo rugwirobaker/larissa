@@ -56,14 +56,15 @@ By default in all cases larissa is listening at:
 ```localhost:3000```
 ## usage
 
-| **function**          | **Endpoint**            | **Options**                   | **Method** | 
-|:--------------------- |:----------------------- |:------------------------------|:------------|
-| larissa buiild info   |`"/build"`               |                               | **GET**     |
-| server health status  |`"/health"`              |                               | **GET**     | 
-| upload image          |`"/put/:bucket"`         |Form Field:`image:"image_name"`| **PUT**     |
-| dowload image         |`"/get/:bucket/:image"`  |                               | **GET**     |           
-| delete image          |`"/del/:bucket/:image"`  |                               | **DELETE**  |           
-| verify image existance|`"/exists:bucket/:image"`|                               | **GET**     |
+| **function**                | **Endpoint**            | **Options**                   | **Method**  | 
+|:---------------------       |:----------------------- |:------------------------------|:------------|
+| larissa buiild info         |`"/build"`               |                               | **GET**     |
+| server health status        |`"/health"`              |                               | **GET**     | 
+| upload image                |`"/put/:bucket"`         |Form Field:`image:"image_name"`| **PUT**     |
+| list alll images a in bucket|`"/list/:bucket"`        |                               | **GET**     |
+| dowload image               |`"/get/:bucket/:image"`  |                               | **GET**     |           
+| delete image                |`"/del/:bucket/:image"`  |                               | **DELETE**  |           
+| verify image existance      |`"/exists:bucket/:image"`|                               | **GET**     |
 
 
 ## Development

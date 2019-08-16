@@ -20,7 +20,7 @@ func Del(proctl larissa.Protocol, lggr log.Entry) http.Handler {
 		bucket := vars["bucket"]
 		name := vars["name"]
 
-		if err := proctl.Del(name, bucket); err != nil {
+		if err := proctl.Del(r.Context(), name, bucket); err != nil {
 			severityLevel := errors.Expect(err, errors.KindNotFound)
 			err = errors.E(op, err, severityLevel)
 			lggr.SystemErr(err)
