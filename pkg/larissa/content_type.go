@@ -1,4 +1,4 @@
-package handlers
+package larissa
 
 import (
 	"net/http"
@@ -7,10 +7,7 @@ import (
 )
 
 func ext(content []byte) (string, error) {
-	filetype := mime(content)
+	filetype := http.DetectContentType(content)
 	return types.Extention(filetype)
 }
 
-func mime(content []byte) string {
-	return http.DetectContentType(content)
-}

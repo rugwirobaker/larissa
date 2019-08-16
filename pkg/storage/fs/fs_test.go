@@ -1,6 +1,7 @@
 package fs
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
@@ -81,6 +82,7 @@ func Test_backend_fileLoc(t *testing.T) {
 
 func Test_backend_Put(t *testing.T) {
 	type args struct {
+		ctx     context.Context
 		file    string
 		bucket  string
 		content []byte
@@ -95,7 +97,7 @@ func Test_backend_Put(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.fs.Put(tt.args.file, tt.args.bucket, tt.args.content); (err != nil) != tt.wantErr {
+			if err := tt.fs.Put(tt.args.ctx, tt.args.file, tt.args.bucket, tt.args.content); (err != nil) != tt.wantErr {
 				t.Errorf("backend.Put() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -104,6 +106,7 @@ func Test_backend_Put(t *testing.T) {
 
 func Test_backend_Get(t *testing.T) {
 	type args struct {
+		ctx    context.Context
 		file   string
 		bucket string
 	}
@@ -118,7 +121,7 @@ func Test_backend_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.fs.Get(tt.args.file, tt.args.bucket)
+			got, err := tt.fs.Get(tt.args.ctx, tt.args.file, tt.args.bucket)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("backend.Get() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -132,6 +135,7 @@ func Test_backend_Get(t *testing.T) {
 
 func Test_backend_Del(t *testing.T) {
 	type args struct {
+		ctx    context.Context
 		file   string
 		bucket string
 	}
@@ -145,7 +149,7 @@ func Test_backend_Del(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.fs.Del(tt.args.file, tt.args.bucket); (err != nil) != tt.wantErr {
+			if err := tt.fs.Del(tt.args.ctx, tt.args.file, tt.args.bucket); (err != nil) != tt.wantErr {
 				t.Errorf("backend.Del() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -154,6 +158,7 @@ func Test_backend_Del(t *testing.T) {
 
 func Test_backend_Exists(t *testing.T) {
 	type args struct {
+		ctx    context.Context
 		file   string
 		bucket string
 	}
@@ -167,8 +172,36 @@ func Test_backend_Exists(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.fs.Exists(tt.args.file, tt.args.bucket); (err != nil) != tt.wantErr {
+			if err := tt.fs.Exists(tt.args.ctx, tt.args.file, tt.args.bucket); (err != nil) != tt.wantErr {
 				t.Errorf("backend.Exists() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func Test_backend_List(t *testing.T) {
+	type args struct {
+		ctx    context.Context
+		bucket string
+	}
+	tests := []struct {
+		name    string
+		fs      *backend
+		args    args
+		want    []string
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.fs.List(tt.args.ctx, tt.args.bucket)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("backend.List() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("backend.List() = %v, want %v", got, tt.want)
 			}
 		})
 	}

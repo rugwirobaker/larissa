@@ -42,6 +42,7 @@ func RegisterHandlers(r *mux.Router, opts *HandlerOpts) {
 	r.Handle(PathPut, LogEntryHandler(Put, opts)).Methods(http.MethodPut)
 	r.Handle(PathGet, LogEntryHandler(Get, opts)).Methods(http.MethodGet)
 	r.Handle(PathDel, LogEntryHandler(Del, opts)).Methods(http.MethodDelete)
+	r.Handle(PathList, LogEntryHandler(List, opts)).Methods(http.MethodGet)
 	r.Handle(PathExists, LogEntryHandler(Exists, opts)).Methods(http.MethodGet)
 }
 

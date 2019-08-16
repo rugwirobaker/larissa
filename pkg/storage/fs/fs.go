@@ -1,7 +1,9 @@
 package fs
 
 import (
+	"context"
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/rugwirobaker/larissa/pkg/errors"
@@ -43,7 +45,7 @@ func (fs *backend) fileLoc(bucket, file string) string {
 	return filepath.Join(fs.rootDir, bucket, file)
 }
 
-func (fs *backend) Put(file, bucket string, content []byte) error {
+func (fs *backend) Put(ctx context.Context, file, bucket string, content []byte) error {
 	const op errors.Op = "fs.Put"
 
 	path := fs.bucketLoc(bucket)
@@ -60,7 +62,7 @@ func (fs *backend) Put(file, bucket string, content []byte) error {
 	}
 	return nil
 }
-func (fs *backend) Get(file, bucket string) (*types.Object, error) {
+func (fs *backend) Get(ctx context.Context, file, bucket string) (*types.Object, error) {
 	const op errors.Op = "fs.Get"
 
 	path := fs.fileLoc(bucket, file)
@@ -79,7 +81,7 @@ func (fs *backend) Get(file, bucket string) (*types.Object, error) {
 
 	return &types.Object{Name: file, Content: content}, nil
 }
-func (fs *backend) Del(file, bucket string) error {
+func (fs *backend) Del(ctx context.Context, file, bucket string) error {
 	const op errors.Op = "fs.Del"
 
 	path := fs.fileLoc(bucket, file)
@@ -96,7 +98,7 @@ func (fs *backend) Del(file, bucket string) error {
 
 	return nil
 }
-func (fs *backend) Exists(file, bucket string) error {
+func (fs *backend) Exists(ctx context.Context, file, bucket string) error {
 	const op errors.Op = "fs.Exists"
 
 	path := fs.fileLoc(bucket, file)
@@ -110,4 +112,44 @@ func (fs *backend) Exists(file, bucket string) error {
 		return errors.E(op, err, errors.O(file), errors.B(bucket), errors.KindNotFound)
 	}
 	return nil
+}
+
+func (fs *backend) List(ctx context.Context, bucket string) ([]string, error) {
+	const op errors.Op = "fs.List"
+
+	path := fs.bucketLoc(bucket)
+
+	exists, err := afero.Exists(fs.filesystem, path)
+	if err != nil {
+		return []string{}, errors.E(op, err, errors.B(bucket), errors.KindNotFound)
+	}
+
+	if !exists {
+		return []string{}, errors.E(op, err, errors.B(bucket), errors.KindNotFound)
+	}
+
+	fileInfos, err := afero.ReadDir(fs.filesystem, path)
+
+	if err != nil {
+		if os.IsNotExist(err) {
+			return []string{}, nil
+		}
+
+		return nil, errors.E(op, errors.B(bucket), err, errors.KindUnexpected)
+	}
+
+	objects := []string{}
+
+	for _, fileInfo := range fileInfos {
+		if fileInfo.IsDir() {
+			continue
+		}
+		name := fileInfo.Name()
+		if name == "" {
+			continue
+		}
+		objects = append(objects, fileInfo.Name())
+
+	}
+	return objects, nil
 }

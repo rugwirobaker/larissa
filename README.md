@@ -16,12 +16,13 @@ As of now larissa is still a prototype with the design principles not yet set.
 ## Run your own
 
 **Natively**
+
 If you're inside GOPATH, make sure GO111MODULE=on, if you're outside GOPATH, then Go Modules are on by default. 
 The main package is inside cmd and is run like any go project as follows:
 
 1. clone the repository:
 
-    ```$ git clone github.com/rugwirobaker/larissa```
+    ```$ git clone https://github.com/rugwirobaker/larissa.git```
 
 3. cd into the larissa directory:
     
@@ -56,14 +57,15 @@ By default in all cases larissa is listening at:
 ```localhost:3000```
 ## usage
 
-| **function**          | **Endpoint**            | **Options**                   | **Method** | 
-|:--------------------- |:----------------------- |:------------------------------|:------------|
-| larissa buiild info   |`"/build"`               |                               | **GET**     |
-| server health status  |`"/health"`              |                               | **GET**     | 
-| upload image          |`"/put/:bucket"`         |Form Field:`image:"image_name"`| **PUT**     |
-| dowload image         |`"/get/:bucket/:image"`  |                               | **GET**     |           
-| delete image          |`"/del/:bucket/:image"`  |                               | **DELETE**  |           
-| verify image existance|`"/exists:bucket/:image"`|                               | **GET**     |
+| **function**                | **Endpoint**            | **Options**                   | **Method**  | 
+|:---------------------       |:----------------------- |:------------------------------|:------------|
+| larissa buiild info         |`"/build"`               |                               | **GET**     |
+| server health status        |`"/health"`              |                               | **GET**     | 
+| upload image                |`"/put/:bucket"`         |Form Field:`image:"image_name"`| **PUT**     |
+| list alll images a in bucket|`"/list/:bucket"`        |                               | **GET**     |
+| dowload image               |`"/get/:bucket/:image"`  |                               | **GET**     |           
+| delete image                |`"/del/:bucket/:image"`  |                               | **DELETE**  |           
+| verify image existance      |`"/exists:bucket/:image"`|                               | **GET**     |
 
 
 ## Development

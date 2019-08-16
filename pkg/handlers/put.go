@@ -34,7 +34,7 @@ func Put(proctl larissa.Protocol, lggr log.Entry) http.Handler {
 
 		file, header, err := r.FormFile("image")
 		if err != nil {
-			lggr.SystemErr(errors.E(op, err))
+			lggr.SystemErr(errors.E(op, err, errors.KindBadRequest))
 			w.WriteHeader(errors.KindBadRequest)
 			return
 		}
@@ -47,17 +47,9 @@ func Put(proctl larissa.Protocol, lggr log.Entry) http.Handler {
 			return
 		}
 
-		// get content type
-		_, err = ext(content)
-		if err != nil {
-			lggr.SystemErr(errors.E(op, err))
-			w.WriteHeader(errors.KindBadRequest)
-			return
-		}
-
 		var filename = header.Filename
 
-		if err := proctl.Put(filename, bucket, content); err != nil {
+		if err := proctl.Put(r.Context(), filename, bucket, content); err != nil {
 			severityLevel := errors.Expect(err, errors.KindNotFound)
 			err = errors.E(op, err, severityLevel)
 			lggr.SystemErr(err)
@@ -65,7 +57,7 @@ func Put(proctl larissa.Protocol, lggr log.Entry) http.Handler {
 			return
 		}
 
-		message:=map[string]string{"message":"file created"}
+		message := map[string]string{"message": "file created"}
 
 		w.WriteHeader(http.StatusCreated)
 		encodeRes(w, message)
