@@ -1,4 +1,5 @@
 [![Build Status](https://cloud.drone.io/api/badges/rugwirobaker/larissa/status.svg)](https://cloud.drone.io/rugwirobaker/larissa)
+<a href="https://codebeat.co/projects/github-com-rugwirobaker-larissa-master"><img alt="codebeat badge" src="https://codebeat.co/badges/b8191688-451a-4562-b1c6-9222dc589dca" /></a>
 
 # Larissa
 Larissa is an elegent image server accessible via a S3 like HTTP API.
