@@ -74,4 +74,5 @@ Tips:
 
 * the errors package follows the example of [upspin project's errors](https://commandcenter.blogspot.com/2017/12/error-handling-in-upspin.html)
 ## Contributing
+
 As of now PRs are not yet accepted. The project's direaction is still shaping up
