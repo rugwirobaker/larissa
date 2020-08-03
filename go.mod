@@ -11,7 +11,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/sirupsen/logrus v1.6.0
-	github.com/spf13/afero v1.2.2
+	github.com/spf13/afero v1.3.3
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	gopkg.in/go-playground/validator.v9 v9.31.0
