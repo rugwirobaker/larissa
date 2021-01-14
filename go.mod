@@ -13,6 +13,6 @@ require (
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/afero v1.5.1
 	github.com/stretchr/objx v0.2.0 // indirect
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	gopkg.in/go-playground/validator.v9 v9.31.0
 )
